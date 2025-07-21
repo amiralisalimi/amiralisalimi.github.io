@@ -94,23 +94,27 @@ async function fetchWeather(lat, lon) {
 function displayWeather(data) {
     const weatherOutput = document.getElementById('weather-output');
     
-    // Get weather icon based on condition
     const iconCode = data.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     
-    // Create weather HTML with animation classes
+    const now = new Date();
+    const formattedTime = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = now.toLocaleDateString('fa-IR');
+
     weatherOutput.innerHTML = `
         <div class="weather-card hidden">
             <div class="weather-header">
                 <h2>${data.name}</h2>
                 <img src="${iconUrl}" alt="${data.weather[0].description}">
             </div>
-            <div class="weather-details">
-                <p>دما: <span>${Math.round(data.main.temp)}°C</span></p>
-                <p>وضعیت: ${data.weather[0].description}</p>
-                <p>رطوبت: ${data.main.humidity}%</p>
-                <p>سرعت باد: ${data.wind.speed} متر/ثانیه</p>
-            </div>
+                <div class="weather-details">
+                    <p>تاریخ: ${formattedDate}</p>
+                    <p>ساعت: ${formattedTime}</p>
+                    <p>دما: ${Math.round(data.main.temp)}°C</p>
+                    <p>وضعیت: ${data.weather[0].description}</p>
+                    <p>رطوبت: ${data.main.humidity}%</p>
+                    <p>سرعت باد: ${data.wind.speed} متر/ثانیه</p>
+                </div>
         </div>
     `;
     
