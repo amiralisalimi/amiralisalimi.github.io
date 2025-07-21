@@ -50,7 +50,13 @@ const API_KEY = '20a3b8d81e54c79e021bc6436ea216cb';
 document.getElementById('get-weather-btn').addEventListener('click', () => {
     const weatherOutput = document.getElementById('weather-output');
     
-    weatherOutput.innerHTML = '<div class="loader"></div>';
+    weatherOutput.innerHTML = `
+    <div class="d-flex justify-content-center mt-3">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">در حال بارگذاری...</span>
+        </div>
+    </div>`;
+
     weatherOutput.style.display = 'block';
     
     if (navigator.geolocation) {
@@ -108,7 +114,6 @@ function displayWeather(data) {
         </div>
     `;
     
-    // Trigger animation after short delay
     setTimeout(() => {
         const weatherCard = document.querySelector('.weather-card');
         weatherCard.classList.remove('hidden');
