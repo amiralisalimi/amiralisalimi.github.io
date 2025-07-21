@@ -100,21 +100,39 @@ function displayWeather(data) {
     const now = new Date();
     const formattedTime = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
     const formattedDate = now.toLocaleDateString('fa-IR');
+    
+
+    const weatherMain = data.weather[0].main.toLowerCase();
+    let bgClass = '';
+
+    switch (weatherMain) {
+        case 'rain':
+            bgClass = 'rainy-bg';
+            break;
+        case 'clear':
+            bgClass = 'sunny-bg';
+            break;
+        case 'clouds':
+            bgClass = 'cloudy-bg';
+            break;
+        default:
+            bgClass = '';
+    }
 
     weatherOutput.innerHTML = `
-        <div class="weather-card hidden">
+        <div class="weather-card ${bgClass} hidden">
             <div class="weather-header">
                 <h2>${data.name}</h2>
                 <img src="${iconUrl}" alt="${data.weather[0].description}">
             </div>
-                <div class="weather-details">
-                    <p>تاریخ: ${formattedDate}</p>
-                    <p>ساعت: ${formattedTime}</p>
-                    <p>دما: ${Math.round(data.main.temp)}°C</p>
-                    <p>وضعیت: ${data.weather[0].description}</p>
-                    <p>رطوبت: ${data.main.humidity}%</p>
-                    <p>سرعت باد: ${data.wind.speed} متر/ثانیه</p>
-                </div>
+            <div class="weather-details">
+                <p>تاریخ: ${formattedDate}</p>
+                <p>ساعت: ${formattedTime}</p>
+                <p>دما: ${Math.round(data.main.temp)}°C</p>
+                <p>وضعیت: ${data.weather[0].description}</p>
+                <p>رطوبت: ${data.main.humidity}%</p>
+                <p>سرعت باد: ${data.wind.speed} متر/ثانیه</p>
+            </div>
         </div>
     `;
     
