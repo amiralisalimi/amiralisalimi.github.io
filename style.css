@@ -40,3 +40,12 @@ button {
     box-shadow: 0 0 10px #ccc;
 }
 
+.sunny-bg {
+    background: linear-gradient(to top, #ffe259, #ffa751);
+}
+.rainy-bg {
+    background: linear-gradient(to top, #4e54c8, #8f94fb);
+}
+.cloudy-bg {
+    background: linear-gradient(to top, #d7d2cc, #304352);
+}
