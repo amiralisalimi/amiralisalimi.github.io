@@ -24,11 +24,18 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         function (error) {
           showError('دسترسی به موقعیت مکانی امکان‌پذیر نیست. استفاده از موقعیت پیش‌فرض تهران.');
-          fetchWeatherByCity('Tehran');
+          const tehranLat = 35.6892;
+          const tehranLon = 51.3890;
+          const fakeWeather = getFakeWeather();
+          displayFakeWeather(fakeWeather, 'تهران', tehranLat, tehranLon);
         }
       );
     } else {
       showError('مرورگر شما از موقعیت‌یابی پشتیبانی نمی‌کند.');
+      const tehranLat = 35.6892;
+      const tehranLon = 51.3890;
+      const fakeWeather = getFakeWeather();
+      displayFakeWeather(fakeWeather, 'تهران', tehranLat, tehranLon);
     }
   });
 
@@ -51,6 +58,8 @@ async function fetchWeatherByCoords(lat, lon) {
     displayWeather(data);
   } catch (err) {
     showError(err.message);
+    const fakeWeather = getFakeWeather();
+    displayFakeWeather(fakeWeather, null, lat, lon);
   }
 }
 
@@ -65,6 +74,8 @@ async function fetchWeatherByCity(city) {
     displayWeather(data);
   } catch (err) {
     showError(err.message);
+    const fakeWeather = getFakeWeather();
+    displayFakeWeather(fakeWeather, city, 0, 0);
   }
 }
 
@@ -72,6 +83,10 @@ function displayWeather(data) {
   const weatherOutput = document.getElementById('weather-output');
   const iconCode = data.weather[0].icon;
   const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  
+  const now = new Date();
+  const formattedTime = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+  const formattedDate = now.toLocaleDateString('fa-IR');
   const sunrise = new Date(data.sys.sunrise * 1000).toLocaleTimeString('fa-IR');
   const sunset = new Date(data.sys.sunset * 1000).toLocaleTimeString('fa-IR');
 
@@ -82,6 +97,8 @@ function displayWeather(data) {
         <img src="${iconUrl}" alt="${data.weather[0].description}">
       </div>
       <div class="weather-details">
+        <p>تاریخ: ${formattedDate}</p>
+        <p>ساعت: ${formattedTime}</p>
         <p>دما: <span>${Math.round(data.main.temp)}°C</span></p>
         <p>دمای محسوس: ${Math.round(data.main.feels_like)}°C</p>
         <p>وضعیت: ${data.weather[0].description}</p>
@@ -99,6 +116,50 @@ function displayWeather(data) {
   }, 50);
 
   updateBackground(data.weather[0].id);
+}
+
+function displayFakeWeather(fakeWeather, cityName, lat, lon) {
+  const now = new Date();
+  const formattedTime = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+  const formattedDate = now.toLocaleDateString('fa-IR');
+
+  const weatherOutput = document.getElementById('weather-output');
+  const locationText = cityName 
+    ? cityName 
+    : `موقعیت تقریبی: (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+
+  weatherOutput.innerHTML = `
+    <div class="weather-card fallback-bg hidden">
+      <div class="weather-header">
+        <h2>${locationText}</h2>
+        <span>پیش‌بینی ساختگی</span>
+      </div>
+      <div class="weather-details">
+        <p>تاریخ: ${formattedDate}</p>
+        <p>ساعت: ${formattedTime}</p>
+        <p>دما: ${fakeWeather.temp}°C</p>
+        <p>وضعیت: ${fakeWeather.sky}</p>
+        <p>رطوبت: ${fakeWeather.humidity}%</p>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const card = document.querySelector('.weather-card');
+    if (card) card.classList.remove('hidden');
+  }, 50);
+}
+
+function getFakeWeather() {
+  const temps = [22, 25, 28, 31, 35];
+  const skies = ['آفتابی', 'ابری', 'نیمه‌ابری', 'بارانی', 'طوفانی'];
+  const humidities = [30, 40, 50, 60, 70];
+
+  return {
+    temp: temps[Math.floor(Math.random() * temps.length)],
+    sky: skies[Math.floor(Math.random() * skies.length)],
+    humidity: humidities[Math.floor(Math.random() * humidities.length)],
+  };
 }
 
 function showError(message) {
@@ -126,4 +187,3 @@ function updateBackground(weatherId) {
     body.style.background = '#f0f0f0';
   }
 }
-
